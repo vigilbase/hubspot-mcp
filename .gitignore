@@ -5,3 +5,8 @@ node_modules/
 .DS_Store
 *.log
 dist/
+
+# Local-only deployment config (your KV IDs, custom domain, etc.)
+wrangler.local.toml
+# Local-only teardown notes for a specific deploy
+.teardown-local.md

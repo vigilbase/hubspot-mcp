@@ -1,26 +1,43 @@
-name = "vigilbase-hubspot-mcp"
+name = "hubspot-mcp-proxy"
 main = "src/worker.ts"
 compatibility_date = "2025-05-01"
-workers_dev = false
 
-routes = [
-  { pattern = "hubspot-mcp.vigilbase.dev", custom_domain = true }
-]
+# Default to the workers.dev hostname so a `wrangler deploy` works out of the
+# box. If you'd rather bind the Worker to a custom domain you own in this
+# Cloudflare account, set `workers_dev = false` and uncomment the `routes`
+# block below.
+workers_dev = true
 
-# KV stores: short-lived OAuth state + longer-lived per-session HubSpot tokens.
+# routes = [
+#   { pattern = "hubspot-mcp.example.com", custom_domain = true }
+# ]
+
+# Two KV namespaces are required:
+#   OAUTH_STATE — short-lived DCR + OAuth state (registered clients, codes,
+#                 pending authorization requests).
+#   SESSIONS    — per-user HubSpot access/refresh tokens, keyed by the opaque
+#                 bearer token this Worker hands to the portal.
+#
+# Create them with:
+#   wrangler kv namespace create OAUTH_STATE
+#   wrangler kv namespace create SESSIONS
+# then paste the returned IDs below.
 [[kv_namespaces]]
 binding = "OAUTH_STATE"
-id = "8b4b445ba2af404cb582a186f4a1a860"
+id = "REPLACE_WITH_OAUTH_STATE_KV_ID"
 
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "98adeda01e234744b8549913f07e5bf0"
+id = "REPLACE_WITH_SESSIONS_KV_ID"
 
 [vars]
-# Upstream HubSpot MCP + OAuth endpoints (discovered from
-# https://mcp.hubspot.com/.well-known/oauth-authorization-server).
+# Upstream HubSpot MCP + OAuth endpoints. These are the publicly-documented
+# values from https://mcp.hubspot.com/.well-known/oauth-authorization-server.
 HUBSPOT_AUTHORIZE_URL = "https://mcp.hubspot.com/oauth/authorize/user"
 HUBSPOT_TOKEN_URL = "https://mcp.hubspot.com/oauth/v3/token"
-HUBSPOT_MCP_URL = "https://mcp.hubspot.com/mcp"
-# Space-separated HubSpot scopes the demo app requests (override per-env if needed).
+HUBSPOT_MCP_URL = "https://mcp.hubspot.com/"
+
+# Space-separated HubSpot scopes to request. Must be a subset of the scopes
+# enabled on your HubSpot MCP app. Leave as `oauth` for token-only flows or
+# expand to include the CRM scopes your tools need.
 HUBSPOT_SCOPES = "oauth"

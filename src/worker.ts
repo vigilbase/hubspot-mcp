@@ -134,7 +134,7 @@ function protectedResourceMetadata(url: URL) {
     authorization_servers: [origin(url)],
     scopes_supported: ["hubspot"],
     bearer_methods_supported: ["header"],
-    resource_documentation: "https://github.com/vigilbase/hubspot-mcp",
+    resource_documentation: "https://github.com/vigilbase/hubspot-mcp#readme",
   };
 }
 
@@ -439,6 +439,23 @@ async function handleMcp(req: Request, env: Env): Promise<Response> {
   const passthrough = new Headers(upstreamRes.headers);
   passthrough.delete("transfer-encoding");
   passthrough.delete("content-encoding");
+
+  // Diagnostic: log a snippet only when upstream returns a non-2xx, so we
+  // notice scope/portal/transport regressions without spamming logs on the
+  // happy path. Successful MCP traffic stays silent.
+  if (upstreamRes.status >= 400 && upstreamRes.status !== 405) {
+    const upstreamBody = await upstreamRes.arrayBuffer();
+    const snippet = new TextDecoder().decode(upstreamBody).slice(0, 500);
+    console.warn(
+      "[mcp←hubspot] non-2xx status=",
+      upstreamRes.status,
+      "ct=",
+      upstreamRes.headers.get("content-type") ?? "",
+      "body=",
+      snippet,
+    );
+    return new Response(upstreamBody, { status: upstreamRes.status, headers: passthrough });
+  }
   return new Response(upstreamRes.body, { status: upstreamRes.status, headers: passthrough });
 }
 
