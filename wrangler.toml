@@ -1,0 +1,26 @@
+name = "vigilbase-hubspot-mcp"
+main = "src/worker.ts"
+compatibility_date = "2025-05-01"
+workers_dev = false
+
+routes = [
+  { pattern = "hubspot-mcp.vigilbase.dev", custom_domain = true }
+]
+
+# KV stores: short-lived OAuth state + longer-lived per-session HubSpot tokens.
+[[kv_namespaces]]
+binding = "OAUTH_STATE"
+id = "8b4b445ba2af404cb582a186f4a1a860"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "98adeda01e234744b8549913f07e5bf0"
+
+[vars]
+# Upstream HubSpot MCP + OAuth endpoints (discovered from
+# https://mcp.hubspot.com/.well-known/oauth-authorization-server).
+HUBSPOT_AUTHORIZE_URL = "https://mcp.hubspot.com/oauth/authorize/user"
+HUBSPOT_TOKEN_URL = "https://mcp.hubspot.com/oauth/v3/token"
+HUBSPOT_MCP_URL = "https://mcp.hubspot.com/mcp"
+# Space-separated HubSpot scopes the demo app requests (override per-env if needed).
+HUBSPOT_SCOPES = "oauth"
