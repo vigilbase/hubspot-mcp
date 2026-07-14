@@ -24,11 +24,11 @@ workers_dev = true
 # then paste the returned IDs below.
 [[kv_namespaces]]
 binding = "OAUTH_STATE"
-id = "REPLACE_WITH_OAUTH_STATE_KV_ID"
+id = "8b4b445ba2af404cb582a186f4a1a860"
 
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "REPLACE_WITH_SESSIONS_KV_ID"
+id = "98adeda01e234744b8549913f07e5bf0"
 
 [vars]
 # Upstream HubSpot MCP + OAuth endpoints. These are the publicly-documented
