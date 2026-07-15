@@ -8,6 +8,10 @@ compatibility_date = "2025-05-01"
 # block below.
 workers_dev = true
 
+# routes = [
+#   { pattern = "hubspot-mcp.example.com", custom_domain = true }
+# ]
+
 [observability.logs]
 enabled = true
 destinations = ["datadog-logs"]
@@ -15,10 +19,6 @@ destinations = ["datadog-logs"]
 [observability.traces]
 enabled = true
 destinations = ["datadog-traces"]
-
-# routes = [
-#   { pattern = "hubspot-mcp.example.com", custom_domain = true }
-# ]
 
 # Two KV namespaces are required:
 #   OAUTH_STATE — short-lived DCR + OAuth state (registered clients, codes,

@@ -66,6 +66,8 @@ Edit `wrangler.toml` and paste each returned `id` into the matching `[[kv_namesp
 
 If you want a custom domain (e.g. `hubspot-mcp.example.com`), set `workers_dev = false` and uncomment the `routes` block. The zone must already exist in the same Cloudflare account.
 
+The checked-in configuration also exports telemetry to account-level Workers Observability destinations named `datadog-logs` and `datadog-traces`. Create matching log and trace destinations in the Cloudflare dashboard, or change/remove those destination names before deploying from another account. OpenTelemetry export requires a Workers Paid plan. Cloudflare currently documents direct Datadog trace OTLP ingest as pending, so the trace destination must use an endpoint supported by your account or remain disabled until Datadog support is available.
+
 ### 3. Deploy
 
 ```sh
